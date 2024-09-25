@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dataan.db.mapper.BaseMapper">
+
+
+    <insert id="createTable">
+        create table ${tableName}(${values}) ${end}
+    </insert>
+
+    <insert id="deleteTable">
+        drop table ${tableName}
+    </insert>
+
+    <insert id="startTransaction">
+        start transaction
+    </insert>
+    <insert id="updateTableName">
+        alter table ${oldTableName} rename to ${newTableName}
+    </insert>
+    <insert id="addTableColumn">
+        <foreach collection="sqls" index="index" item="item"  separator=";" >
+            alter table ${tableName} add column ${item}
+        </foreach>
+    </insert>
+
+    <insert id="deleteTableColumn">
+        <foreach collection="fields" index="index" item="item"  separator=";" >
+            alter table ${tableName} drop column ${item}
+        </foreach>
+    </insert>
+
+    <insert id="commit">
+        commit
+    </insert>
+
+    <insert id="rollback">
+        rollback
+    </insert>
+
+</mapper>

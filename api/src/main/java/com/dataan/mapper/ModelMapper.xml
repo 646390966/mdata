@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dataan.mapper.ModelMapper">
+
+    <resultMap id="modelResultMap" type="com.dataan.entity.Model">
+        <result column="fields" property="fields" typeHandler="com.dataan.handler.ListFieldTypeHandler"></result>
+    </resultMap>
+    <sql id="table-name">
+        model
+    </sql>
+
+    <sql id="fields">
+        id,name,db,source,comment,primary_key,fields,create_time,update_time
+    </sql>
+
+    <sql id="values">
+        #{id},
+        #{name},
+        #{db},
+        #{source},
+        #{comment},
+        #{primaryKey},
+        #{fields,typeHandler=com.dataan.handler.ListFieldTypeHandler},
+        #{createTime},
+        #{updateTime}
+    </sql>
+
+    <insert id="createModel">
+        insert into
+        <include refid="table-name"/> (<include refid="fields"/>) values (<include refid="values"/>)
+    </insert>
+
+    <delete id="deleteModel">
+        delete from <include refid="table-name"/> where id=#{id}
+    </delete>
+    <update id="updateModel">
+        update model set name=#{name},comment=#{comment},update_time=#{updateTime},fields=#{fields,typeHandler=com.dataan.handler.ListFieldTypeHandler} where id=#{id}
+    </update>
+    <select id="getModelList" resultMap="modelResultMap">
+        select <include refid="fields"/> from <include refid="table-name"/>
+        <trim prefix="where" prefixOverrides="and">
+            <if test="name != null and name != ''">
+                <bind name="newName" value="'%'+name+'%'"></bind>
+                and name like #{newName}
+            </if>
+            <if test="createTimeStart !=null">
+                and create_time >= #{createTimeStart}
+            </if>
+            <if test="createTimeEnd !=null">
+                and create_time &lt;= #{createTimeEnd}
+            </if>
+        </trim>
+        <if test="orderColumn !=null">
+            order by ${orderColumn}
+            <choose>
+                <when test="desc != null and desc==true">
+                    desc
+                </when>
+                <otherwise>
+                    asc
+                </otherwise>
+            </choose>
+        </if>
+    </select>
+
+    <select id="getTotalCount" resultType="int">
+        select count(*) from <include refid="table-name"/>
+    </select>
+    <select id="getModelById" resultMap="modelResultMap">
+        select <include refid="fields"/> from <include refid="table-name"/>
+        where id = #{id}
+    </select>
+    <select id="getModelByName" resultMap="modelResultMap">
+        select <include refid="fields"/> from <include refid="table-name"/>
+        where name = #{name}
+    </select>
+</mapper>

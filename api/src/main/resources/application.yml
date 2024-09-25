@@ -1,0 +1,26 @@
+server:
+  port: ${SERVER.PORT}
+  servlet:
+    context-path: /mdata
+spring:
+  application:
+    name: mdata
+  datasource:
+    meta:
+      jdbc-url: jdbc:${DB_TYPE:mysql}://${DB_HOST:192.168.2.5}:${DB_PORT:3306}/${DB_META_DATABASE:mdata}?useSSL=false&useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT&allowMultiQueries=true
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      datasource-id: meta
+    data:
+      jdbc-url: jdbc:${DB_TYPE:mysql}://${DB_HOST:192.168.2.5}:${DB_PORT:3306}/${DB_DATABASE:data}?useSSL=false&useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT&allowMultiQueries=true
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
+      driver-class-name: ${DB_DRIVER}
+      datasource-id: data
+springdoc:
+  api-docs:
+    path: /docs
+  swagger-ui:
+    path: /docs-api
+jwt:
+  key: 8888

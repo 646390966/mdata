@@ -1,0 +1,27 @@
+//引入清除默认样式
+@import './reset.scss';
+//滚动条样式设置
+::-webkit-scrollbar{
+    width:10px;
+}
+
+::-webkit-scrollbar-track{
+    background:$base-menu-background;
+}
+
+::-webkit-scrollbar-thumb{
+    width: 10px;
+    background-color: yellowgreen;
+}
+
+//菜单样式
+.el-menu{
+    border:0!important;
+}
+
+.el-tag {
+    font-size:16px!important;
+}
+// .el-table .el-table__cell{
+//     z-index:0!important;
+// }

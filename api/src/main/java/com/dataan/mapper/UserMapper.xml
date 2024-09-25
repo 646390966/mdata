@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dataan.mapper.UserMapper">
+<!--    <cache></cache>-->
+    <resultMap id="userResultMap" type="com.dataan.entity.User">
+        <result column="role" property="role" typeHandler="com.dataan.handler.ListTypeHandler"></result>
+    </resultMap>
+    <sql id="table-name">user</sql>
+    <sql id="fields">
+    id,
+    username,
+    password,
+    avator,
+    role,
+    create_time,
+    update_time
+    </sql>
+
+    <sql id="values">
+        #{id},
+        #{username},
+        #{password},
+        #{avator},
+        #{role,typeHandler=com.dataan.handler.ListTypeHandler},
+        #{createTime},
+        #{updateTime}
+    </sql>
+
+    <insert id="createUser">
+        insert into
+        <include refid="table-name"/> (<include refid="fields"/>) values (<include refid="values"/>)
+    </insert>
+
+    <update id="updateUser">
+        update <include refid="table-name"/> set username=#{username},password=#{password},update_time=#{updateTime},avator=#{avator},role=#{role,typeHandler=com.dataan.handler.ListTypeHandler} where id=#{id}
+    </update>
+
+    <delete id="deleteUser">
+        delete from <include refid="table-name"/> where id=#{id}
+    </delete>
+
+    <select id="getUserById" resultMap="userResultMap">
+        select <include refid="fields"/> from <include refid="table-name"/>
+        where id = #{id}
+    </select>
+    <select id="getUserByUsername" resultMap="userResultMap">
+        select <include refid="fields"/> from <include refid="table-name"/>
+        where username = #{username}
+    </select>
+    <select id="getUserList" resultMap="userResultMap">
+        select <include refid="fields"/> from <include refid="table-name"/>
+        <trim prefix="where" prefixOverrides="and">
+            <if test="username != null and username != ''">
+                <bind name="newUsername" value="'%'+username+'%'"></bind>
+                and username like #{newUsername}
+            </if>
+            <if test="createTimeStart !=null">
+                and create_time >= #{createTimeStart}
+            </if>
+            <if test="createTimeEnd !=null">
+                and create_time &lt;= #{createTimeEnd}
+            </if>
+        </trim>
+        <if test="orderColumn !=null">
+        order by ${orderColumn}
+        <choose>
+            <when test="desc != null and desc==true">
+                desc
+            </when>
+            <otherwise>
+                asc
+            </otherwise>
+        </choose>
+        </if>
+    </select>
+
+    <select id="getTotalCount" resultType="int">
+        select count(*) from <include refid="table-name"/>
+    </select>
+</mapper>
